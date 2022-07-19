@@ -21,27 +21,27 @@ class FilmControllerTest {
     void validationName() {
         FilmController filmController = new FilmController();
         Film film = new Film("", DESCRIPTION_NORMAL, RELEASE_DATE_NORMAL, 120);
-        assertThrows(ValidationException.class, () -> filmController.validation(film), "No exception");
+        assertThrows(ValidationException.class, () -> filmController.save(film), "No exception");
     }
 
     @Test
     void validationDescription() {
         FilmController filmController = new FilmController();
         Film film = new Film("name", DESCRIPTION_OVER_200, RELEASE_DATE_NORMAL, 120);
-        assertThrows(ValidationException.class, () -> filmController.validation(film), "No exception");
+        assertThrows(ValidationException.class, () -> filmController.save(film), "No exception");
     }
 
     @Test
     void validationReleaseDate() {
         FilmController filmController = new FilmController();
         Film film = new Film("name", DESCRIPTION_NORMAL, RELEASE_DATE_NOT_NORMAL, 120);
-        assertThrows(ValidationException.class, () -> filmController.validation(film), "No exception");
+        assertThrows(ValidationException.class, () -> filmController.save(film), "No exception");
     }
 
     @Test
     void validationDuration() {
         FilmController filmController = new FilmController();
         Film film = new Film("name", DESCRIPTION_NORMAL, RELEASE_DATE_NORMAL, -120);
-        assertThrows(ValidationException.class, () -> filmController.validation(film), "No exception");
+        assertThrows(ValidationException.class, () -> filmController.save(film), "No exception");
     }
 }

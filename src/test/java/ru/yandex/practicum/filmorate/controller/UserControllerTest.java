@@ -14,17 +14,17 @@ class UserControllerTest {
     void validateLogin() {
         final UserController userController = new UserController();
         final User user = new User("email@ya.ru", "", LocalDate.of(1995, 10, 25));
-        assertThrows(ValidationException.class, () -> userController.validate(user), "No exception");
+        assertThrows(ValidationException.class, () -> userController.save(user), "No exception");
 
         final User user2 = new User("email@ya.ru", "Login 12", LocalDate.of(1995, 10, 25));
-        assertThrows(ValidationException.class, () -> userController.validate(user), "No exception");
+        assertThrows(ValidationException.class, () -> userController.save(user), "No exception");
     }
 
     @Test
     void validateName() {
         final UserController userController = new UserController();
         final User user = new User("email@ya.ru", "login12", LocalDate.of(1995, 10, 25));
-        userController.validate(user);
+        userController.save(user);
         assertTrue(user.getName().contains(user.getLogin()), "Имя не подставилось");
     }
 }

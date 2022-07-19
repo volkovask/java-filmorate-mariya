@@ -42,12 +42,13 @@ public class UserController {
         return user;
     }
 
-    private void save(User user) {
+    public void save(User user) {
+        validate(user);
         user.setId(idGenerator.generate());
         users.put(user.getId(), user);
     }
 
-    User validate(User user) {
+    private User validate(User user) {
         if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.error("Логин не должен быть пустым и содержать пробелы");
             throw new ValidationException("Логин не должен быть пустым и содержать пробелы");
