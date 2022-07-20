@@ -47,7 +47,7 @@ public class FilmController {
         return film;
     }
 
-    public void save(Film film) {
+    private void save(Film film) {
         validation(film);
         film.setId(idGenerator.generate());
         films.put(film.getId(), film);

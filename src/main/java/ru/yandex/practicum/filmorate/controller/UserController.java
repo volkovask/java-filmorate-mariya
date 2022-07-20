@@ -42,7 +42,7 @@ public class UserController {
         return user;
     }
 
-    public void save(User user) {
+    private void save(User user) {
         validate(user);
         user.setId(idGenerator.generate());
         users.put(user.getId(), user);
