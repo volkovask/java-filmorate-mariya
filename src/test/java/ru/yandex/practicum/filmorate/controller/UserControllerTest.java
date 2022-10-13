@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
@@ -27,4 +28,4 @@ class UserControllerTest {
         userController.createUser(user);
         assertTrue(user.getName().contains(user.getLogin()), "Имя не подставилось");
     }
-}
+}*/

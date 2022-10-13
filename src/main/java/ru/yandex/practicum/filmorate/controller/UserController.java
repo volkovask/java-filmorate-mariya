@@ -1,62 +1,60 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.IdGenerator;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private static final Map<Integer, User> users = new HashMap<>();
-    private final IdGenerator idGenerator = new IdGenerator();
+    private final UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
-    public List<User> getUsers() {
-        return new ArrayList<>(users.values());
+    public Collection<User> getUsers() {
+        return userService.getAllUsers();
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        validate(user);
-        save(user);
-        return user;
+        return userService.create(user);
     }
 
     @PutMapping
     public User updateUser(@RequestBody User user) {
-        if ((user.getId() == null) || (user.getId() < 0)) {
-            log.error("id не может быть путстым или меньше нуля");
-            throw new ValidationException("id не может быть путстым или меньше нуля");
-        }
-        validate(user);
-        users.put(user.getId(), user);
-        return user;
+        return userService.update(user);
     }
 
-    private void save(User user) {
-        validate(user);
-        user.setId(idGenerator.generate());
-        users.put(user.getId(), user);
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Integer id) {
+        return userService.getUserById(id);
     }
 
-    private User validate(User user) {
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.error("Логин не должен быть пустым и содержать пробелы");
-            throw new ValidationException("Логин не должен быть пустым и содержать пробелы");
-        }
-        if ((user.getName() == null) || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            return user;
-        }
-        return user;
+    @PutMapping("/{id}/friends/{friendId}")
+    public void createFriend(@PathVariable("id") Integer userId, @PathVariable Integer friendId) {
+        userService.createFriends(userId, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable("id") Integer id, @PathVariable Integer friendId) {
+        userService.deleteFriends(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getUserFriends(@PathVariable Integer id) {
+        return userService.getUserFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable("id") Integer userId, @PathVariable("otherId") Integer friendsId) {
+        return userService.getCommonFriends(userId, friendsId);
     }
 }
