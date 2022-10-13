@@ -44,34 +44,12 @@ public class FilmService {
     }
 
     public void createLike(Integer filmId, Integer userId) {
-        if (filmId <= 0) {
-            throw new FilmNotFoundException(String.format("Некорректный id: %d", filmId));
-        }
-        if (userId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
-        }
-        if (!filmStorage.getAllFilms().containsKey(filmId)) {
-            throw new FilmNotFoundException(String.format("Фильм с id %d не найден", filmId));
-        }
-        if (!userStorage.getAllUsers().containsKey(userId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
+        validId(filmId, userId);
         filmStorage.getFilmById(filmId).getLikes().add(userId);
     }
 
     public void deleteLike(Integer filmId, Integer userId) {
-        if (filmId <= 0) {
-            throw new FilmNotFoundException(String.format("Некорректный id: %d", filmId));
-        }
-        if (userId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
-        }
-        if (!filmStorage.getAllFilms().containsKey(filmId)) {
-            throw new FilmNotFoundException(String.format("Фильм с id %d не найден", filmId));
-        }
-        if (!userStorage.getAllUsers().containsKey(userId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
+        validId(filmId, userId);
         filmStorage.getFilmById(filmId).getLikes().remove(userId);
     }
 
@@ -83,5 +61,20 @@ public class FilmService {
                 .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    private void validId(Integer filmId, Integer userId) {
+        if (filmId <= 0) {
+            throw new FilmNotFoundException(String.format("Некорректный id: %d", filmId));
+        }
+        if (userId <= 0) {
+            throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
+        }
+        if (!filmStorage.getAllFilms().containsKey(filmId)) {
+            throw new FilmNotFoundException(String.format("Фильм с id %d не найден", filmId));
+        }
+        if (!userStorage.getAllUsers().containsKey(userId)) {
+            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
+        }
     }
 }

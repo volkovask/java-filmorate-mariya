@@ -36,35 +36,13 @@ public class UserService {
     }
 
     public void createFriends(Integer userId, Integer friendId) {
-        if (userId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
-        }
-        if (friendId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", friendId));
-        }
-        if (!userStorage.getAllUsers().containsKey(userId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
-        if (!userStorage.getAllUsers().containsKey(friendId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", friendId));
-        }
+        validId(userId, friendId);
         userStorage.getAllUsers().get(userId).getFriends().add(friendId);
         userStorage.getAllUsers().get(friendId).getFriends().add(userId);
     }
 
     public void deleteFriends(Integer userId, Integer friendId) {
-        if (userId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
-        }
-        if (friendId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", friendId));
-        }
-        if (!userStorage.getAllUsers().containsKey(userId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
-        if (!userStorage.getAllUsers().containsKey(friendId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", friendId));
-        }
+        validId(userId, friendId);
         userStorage.getAllUsers().get(userId).getFriends().remove(friendId);
         userStorage.getAllUsers().get(friendId).getFriends().remove(userId);
     }
@@ -81,6 +59,16 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
+        validId(userId, friendId);
+        List<User> commonFriends = new ArrayList<>();
+        for (Integer id : userStorage.getAllUsers().get(userId).getFriends())
+            if (userStorage.getAllUsers().get(friendId).getFriends().contains(id)) {
+                commonFriends.add(userStorage.getAllUsers().get(id));
+            }
+        return commonFriends;
+    }
+
+    private void validId(Integer userId, Integer friendId) {
         if (userId <= 0) {
             throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
         }
@@ -93,11 +81,5 @@ public class UserService {
         if (!userStorage.getAllUsers().containsKey(friendId)) {
             throw new UserNotFoundException(String.format("Пользователь с id %d не найден", friendId));
         }
-        List<User> commonFriends = new ArrayList<>();
-        for (Integer id : userStorage.getAllUsers().get(userId).getFriends())
-            if (userStorage.getAllUsers().get(friendId).getFriends().contains(id)) {
-                commonFriends.add(userStorage.getAllUsers().get(id));
-            }
-        return commonFriends;
     }
 }
