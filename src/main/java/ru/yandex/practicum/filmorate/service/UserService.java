@@ -1,26 +1,30 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friends.FriendStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+@Slf4j
 @Service
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
+                       FriendStorage friendStorage) {
         this.userStorage = userStorage;
+        this.friendStorage = friendStorage;
     }
 
     public Collection<User> getAllUsers() {
-        return userStorage.getAllUsers().values();
+        return userStorage.getAllUsers();
     }
 
     public User create(User user) {
@@ -36,50 +40,18 @@ public class UserService {
     }
 
     public void createFriends(Integer userId, Integer friendId) {
-        validId(userId, friendId);
-        userStorage.getAllUsers().get(userId).getFriends().add(friendId);
-        userStorage.getAllUsers().get(friendId).getFriends().add(userId);
+        friendStorage.createFriend(userId, friendId);
     }
 
     public void deleteFriends(Integer userId, Integer friendId) {
-        validId(userId, friendId);
-        userStorage.getAllUsers().get(userId).getFriends().remove(friendId);
-        userStorage.getAllUsers().get(friendId).getFriends().remove(userId);
+        friendStorage.deleteFriend(userId, friendId);
     }
 
-    public List<User> getUserFriends(Integer id) {
-        if (id <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", id));
-        }
-        List<User> userFriends = new ArrayList<>();
-        for (Integer friendId : userStorage.getAllUsers().get(id).getFriends()) {
-            userFriends.add(userStorage.getAllUsers().get(friendId));
-        }
-        return userFriends;
+    public Collection<User> getUserFriends(Integer id) {
+        return friendStorage.getUserFriends(id);
     }
 
-    public List<User> getCommonFriends(Integer userId, Integer friendId) {
-        validId(userId, friendId);
-        List<User> commonFriends = new ArrayList<>();
-        for (Integer id : userStorage.getAllUsers().get(userId).getFriends())
-            if (userStorage.getAllUsers().get(friendId).getFriends().contains(id)) {
-                commonFriends.add(userStorage.getAllUsers().get(id));
-            }
-        return commonFriends;
-    }
-
-    private void validId(Integer userId, Integer friendId) {
-        if (userId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", userId));
-        }
-        if (friendId <= 0) {
-            throw new UserNotFoundException(String.format("Некорректный id: %d", friendId));
-        }
-        if (!userStorage.getAllUsers().containsKey(userId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", userId));
-        }
-        if (!userStorage.getAllUsers().containsKey(friendId)) {
-            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", friendId));
-        }
+    public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
+        return friendStorage.getCommonFriends(userId, friendId);
     }
 }
