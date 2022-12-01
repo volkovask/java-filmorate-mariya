@@ -16,6 +16,8 @@ import java.util.Collection;
 @Component
 @RequiredArgsConstructor
 public class GenreDbStorage implements GenreStorage{
+    private static final String GENRE_ID = "genre_id";
+    private static final String GENRE_NAME = "genre_name";
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -42,8 +44,8 @@ public class GenreDbStorage implements GenreStorage{
 
     private Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
         return Genre.builder()
-                .id(rs.getInt("genre_id"))
-                .name(rs.getString("genre_name"))
+                .id(rs.getInt(GENRE_ID))
+                .name(rs.getString(GENRE_NAME))
                 .build();
     }
 }

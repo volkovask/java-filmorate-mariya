@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.friends;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,6 +17,11 @@ import java.util.Collection;
 @Slf4j
 @Component
 public class FriendDbStorage implements FriendStorage {
+    private static final String USER_ID = "user_id";
+    private static final String USER_EMAIL = "user_email";
+    private static final String USER_LOGIN = "user_login";
+    private static final String USER_NAME = "user_name";
+    private static final String USER_BIRTHDAY = "birthday";
     private final UserStorage userStorage;
     private final JdbcTemplate jdbcTemplate;
 
@@ -80,11 +84,11 @@ public class FriendDbStorage implements FriendStorage {
 
     private User makeUser(ResultSet rs, int rowNum) throws SQLException {
         return User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("user_email"))
-                .login(rs.getString("user_login"))
-                .name(rs.getString("user_name"))
-                .birthday(rs.getDate("birthday").toLocalDate())
+                .id(rs.getInt(USER_ID))
+                .email(rs.getString(USER_EMAIL))
+                .login(rs.getString(USER_LOGIN))
+                .name(rs.getString(USER_NAME))
+                .birthday(rs.getDate(USER_BIRTHDAY).toLocalDate())
                 .build();
     }
 }

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.mpaRating;
+package ru.yandex.practicum.filmorate.storage.mpa;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,8 @@ import java.util.Collection;
 @Component
 @RequiredArgsConstructor
 public class MpaDbStorage implements MpaStorage {
+    private static final String MPA_ID = "mpa_id";
+    private static final String MPA_NAME = "mpa_name";
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -38,8 +40,8 @@ public class MpaDbStorage implements MpaStorage {
 
     private Mpa makeMpa(ResultSet rs, int rowNum) throws SQLException {
         return Mpa.builder()
-                .id(rs.getInt("mpa_id"))
-                .name(rs.getString("mpa_name"))
+                .id(rs.getInt(MPA_ID))
+                .name(rs.getString(MPA_NAME))
                 .build();
     }
 }
