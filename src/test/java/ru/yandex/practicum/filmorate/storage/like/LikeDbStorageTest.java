@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LikeDbStorageTest {
+class LikeDbStorageTest {
     final LikeStorage likeDbStorage;
 
     @Test
