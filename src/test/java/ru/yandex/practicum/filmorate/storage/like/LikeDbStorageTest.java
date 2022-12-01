@@ -32,7 +32,7 @@ public class LikeDbStorageTest {
     @Test
     void addLikeTest() {
         final int filmId = 2; //у фильма один лайк
-        final int userId = 1;
+        final int userId = 1; //добавляем лайк от пользователя с id 1
         likeDbStorage.addLike(filmId, userId);
         final int actualLikes = likeDbStorage.getCountLikesByFilm(filmId);
         final int expectedLikes = 2;
@@ -44,7 +44,7 @@ public class LikeDbStorageTest {
     @Order(3)
     void deleteLikeTest() {
         final int filmId = 2;
-        final int userId = 1;
+        final int userId = 1; //удаляем лайк от пользователя с id 1
         likeDbStorage.deleteLike(filmId, userId);
         final int actualLikes = likeDbStorage.getCountLikesByFilm(filmId);
         final int expectedLikes = 1;
