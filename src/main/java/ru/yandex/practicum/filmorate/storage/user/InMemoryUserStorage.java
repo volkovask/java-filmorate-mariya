@@ -23,13 +23,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(User user) {
+    public User createUser(User user) {
         save(user);
         return user;
     }
 
     @Override
-    public User update(User user) {
+    public User updateUser(User user) {
         if ((user.getId() == null) || (user.getId() < 0)) {
             throw new ValidationException("id не может быть путстым или меньше нуля");
         }

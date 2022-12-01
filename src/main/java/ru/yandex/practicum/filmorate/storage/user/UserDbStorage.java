@@ -18,14 +18,20 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @Slf4j
 public class UserDbStorage implements UserStorage{
+    private static final String USER_ID = "user_id";
+    private static final String USER_EMAIL = "user_email";
+    private static final String USER_LOGIN = "user_login";
+    private static final String USER_NAME = "user_name";
+    private static final String USER_BIRTHDAY = "birthday";
+    private static final String SPACE = " ";
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public User create(User user) {
+    public User createUser(User user) {
         validation(user);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
-                .usingGeneratedKeyColumns("user_id");
+                .usingGeneratedKeyColumns(USER_ID);
         final Integer userId = simpleJdbcInsert.executeAndReturnKey(user.toMap()).intValue();
         user.setId(userId);
         log.debug("Добавлен новый пользователь с id = {}", userId);
@@ -33,7 +39,7 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public User update(User user) {
+    public User updateUser(User user) {
         try {
             getUserById(user.getId());
         } catch (EmptyResultDataAccessException e) {
@@ -80,7 +86,7 @@ public class UserDbStorage implements UserStorage{
     }
 
     private void validation(User user) {
-        if (user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(SPACE)) {
             log.error("Логин \"{}\" не должен содержать пробелы", user.getLogin());
             throw new ValidationException(String.format("Логин \"%s\" н должен содержать пробелы", user.getLogin()));
         }
@@ -91,11 +97,11 @@ public class UserDbStorage implements UserStorage{
 
     private User makeUser(ResultSet rs, int rowNum) throws SQLException {
         return User.builder()
-                .id(rs.getInt("user_id"))
-                .email(rs.getString("user_email"))
-                .login(rs.getString("user_login"))
-                .name(rs.getString("user_name"))
-                .birthday(rs.getDate("birthday").toLocalDate())
+                .id(rs.getInt(USER_ID))
+                .email(rs.getString(USER_EMAIL))
+                .login(rs.getString(USER_LOGIN))
+                .name(rs.getString(USER_NAME))
+                .birthday(rs.getDate(USER_BIRTHDAY).toLocalDate())
                 .build();
     }
 }

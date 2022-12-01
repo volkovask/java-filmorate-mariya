@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 
-@Slf4j
 @Service
 public class UserService {
     private final UserStorage userStorage;
@@ -28,11 +26,11 @@ public class UserService {
     }
 
     public User create(User user) {
-        return userStorage.create(user);
+        return userStorage.createUser(user);
     }
 
     public User update(User user) {
-        return userStorage.update(user);
+        return userStorage.updateUser(user);
     }
 
     public User getUserById(Integer id) {

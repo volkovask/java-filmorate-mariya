@@ -17,6 +17,8 @@ import java.util.Set;
 @Component
 @RequiredArgsConstructor
 public class FilmGenreDbStorage implements FilmGenreStorage {
+    private static final String GENRE_ID = "genre_id";
+    private static final String GENRE_NAME = "genre_name";
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -49,7 +51,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     private Set<Genre> makeGenreSet(ResultSet rs) throws SQLException {
         Set<Genre> genreSet = new HashSet<>();
         while (rs.next()) {
-            genreSet.add(new Genre(rs.getInt("genre_id"), rs.getString("genre_name")));
+            genreSet.add(new Genre(rs.getInt(GENRE_ID), rs.getString(GENRE_NAME)));
         }
         return genreSet;
     }
