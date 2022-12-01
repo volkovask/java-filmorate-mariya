@@ -2,28 +2,36 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
+@EqualsAndHashCode(of = "id")
 public class User {
-    @Positive
     private Integer id;
-    @Email
+    @NotNull
+    @NotEmpty
+    @Email(message = "Указан некорректный email адрес")
     private String email;
+    @NotNull
+    @NotEmpty
     private String login;
     private String name;
-    @Past
+    @Past(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
-    private Set<Integer> friends = new HashSet<>();
+    private final Map<Integer, Boolean> friends = new HashMap<>();
 
-    public User(String email, String login, LocalDate birthday) {
-        this.email = email;
-        this.login = login;
-        this.birthday = birthday;
+    public Map<String, Object> toMap() {
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put("user_email", email);
+        userMap.put("user_login", login);
+        userMap.put("user_name", name);
+        userMap.put("birthday", birthday);
+        return userMap;
     }
 }

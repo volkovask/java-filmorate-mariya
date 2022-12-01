@@ -3,26 +3,27 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class InMemoryFilmStorage implements FilmStorage {
+public abstract class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate EARN_RELEASE_DATE = LocalDate.of(1895, 12, 18);
     private static final Integer MAX_DESCRIPTION_LENGTH = 200;
     private final Map<Integer, Film> films = new HashMap<>();
-    @Autowired
     private final FilmIdGenerator filmIdGenerator;
 
     @Override
-    public Map<Integer, Film> getAllFilms() {
-        return films;
+    public Collection<Film> getAllFilms() {
+        return films.values();
     }
 
     @Override
@@ -38,6 +39,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         if (film.getId() < 0) {
             throw new ValidationException("id должен быть больше нуля");
+        }
+        if (!films.containsKey(film.getId())) {
+            throw new FilmNotFoundException(String.format("Фильм с id %d не найден и не может быть обновлен",
+                    film.getId()));
         }
         validation(film);
         films.put(film.getId(), film);

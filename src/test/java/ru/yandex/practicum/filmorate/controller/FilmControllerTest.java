@@ -45,4 +45,5 @@ class FilmControllerTest {
         Film film = new Film("name", DESCRIPTION_NORMAL, RELEASE_DATE_NORMAL, -120);
         assertThrows(ValidationException.class, () -> filmController.createFilm(film), "No exception");
     }
-}*/
+}
+*/

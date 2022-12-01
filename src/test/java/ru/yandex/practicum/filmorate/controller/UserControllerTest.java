@@ -28,4 +28,5 @@ class UserControllerTest {
         userController.createUser(user);
         assertTrue(user.getName().contains(user.getLogin()), "Имя не подставилось");
     }
-}*/
+}
+*/
