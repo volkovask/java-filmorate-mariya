@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Objects;
 
 @Slf4j
@@ -43,6 +44,23 @@ public class LikeDbStorage implements LikeStorage{
             log.error("У фильма с id = {} лайки не найдены", filmId);
             throw new LikeNotFoundException(String.format("У фильма с id = %d лайки не найдены", filmId));
         }
+    }
+
+    @Override
+    public Collection<Integer> getFilmRecommendation(Integer id) {
+        String sqlQuery = "select similar_user_likes.film_id from " +
+                "likes similar_user_likes join " +
+                "(select similar_user.user_id " +
+                "from likes " +
+                "join likes similar_user on likes.film_id = similar_user.film_id " +
+                "and likes.user_id <> similar_user.user_id " +
+                "where likes.user_id = ? " +
+                "group by likes.user_id, similar_user.user_id " +
+                "order by COUNT(likes.film_id) desc " +
+                "limit 1) similar_user on similar_user.user_id = similar_user_likes.user_id " +
+                "left join likes l2 on similar_user_likes.film_id = l2.film_id and l2.user_id = ? " +
+                "where l2.film_id is null";
+        return jdbcTemplate.queryForList(sqlQuery, Integer.class, id, id);
     }
 
     private int getLikesSum(ResultSet rs, int rowNum) throws SQLException {

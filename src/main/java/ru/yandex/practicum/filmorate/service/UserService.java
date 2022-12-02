@@ -3,22 +3,32 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.friends.FriendStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserService {
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
 
+    private final LikeStorage likeStorage;
+    private final FilmStorage filmStorage;
+
     @Autowired
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
-                       FriendStorage friendStorage) {
+                       FriendStorage friendStorage, LikeStorage likeStorage, FilmStorage filmStorage) {
         this.userStorage = userStorage;
         this.friendStorage = friendStorage;
+        this.likeStorage = likeStorage;
+        this.filmStorage = filmStorage;
     }
 
     public Collection<User> getAllUsers() {
@@ -51,5 +61,14 @@ public class UserService {
 
     public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
         return friendStorage.getCommonFriends(userId, friendId);
+    }
+
+    public Collection<Film> getFilmRecommendation(Integer id){
+        List<Film> filmsRecommendation = new ArrayList<>();
+        Collection<Integer> filmIdsRecommendation = likeStorage.getFilmRecommendation(id);
+        for (Integer film_id:filmIdsRecommendation) {
+            filmsRecommendation.add(filmStorage.getFilmById(film_id));
+        }
+        return filmsRecommendation;
     }
 }
