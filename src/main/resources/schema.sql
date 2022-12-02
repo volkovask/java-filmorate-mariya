@@ -5,6 +5,12 @@ create table IF NOT EXISTS GENRES
         primary key,
     GENRE_NAME CHARACTER VARYING(50)
 );
+create table IF NOT EXISTS DIRECTORS
+(
+    DIRECTOR_ID   INTEGER auto_increment
+    primary key,
+    DIRECTOR_NAME CHARACTER VARYING(50)
+    );
 create table IF NOT EXISTS MPA
 (
     MPA_ID   INTEGER auto_increment
@@ -47,9 +53,17 @@ create table IF NOT EXISTS FILM_GENRE
     FILM_ID  INTEGER
 );
 
+create table IF NOT EXISTS FILM_DIRECTOR
+(
+    DIRECTOR_ID INTEGER,
+    FILM_ID  INTEGER
+);
+
 alter table films add constraint if not exists FILMS_MPA_FK foreign key (MPA_ID) references MPA (MPA_ID);
 alter table FILM_GENRE add constraint if not exists FILM_GENRE_Films_FK foreign key (FILM_ID) references FILMS (FILM_ID);
 alter table FILM_GENRE add constraint if not exists FILM_GENRE_GENRE_FK foreign key (GENRE_ID) references GENRES (GENRE_ID);
+alter table FILM_DIRECTOR add constraint if not exists FILM_DIRECTOR_Films_FK foreign key (FILM_ID) references FILMS (FILM_ID) ON DELETE CASCADE;
+alter table FILM_DIRECTOR add constraint if not exists FILM_DIRECTOR_DIRECTOR_FK foreign key (DIRECTOR_ID) references DIRECTORS (DIRECTOR_ID) ON DELETE CASCADE;
 alter table FRIENDS add constraint if not exists FRIENDS_USERS_FK foreign key (FRIEND_ID) references USERS (USER_ID);
 alter table FRIENDS add constraint if not exists FRIENDS_USERS2_FK foreign key (USER_ID) references USERS (USER_ID);
 alter table LIKES add constraint if not exists LIKES_films_FK foreign key (FILM_ID) references FILMS(FILM_ID);

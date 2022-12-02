@@ -25,7 +25,7 @@ import java.util.Set;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
     private static final String TABLE_NAME_FILMS = "films";
     private static final String FILM_ID = "film_id";
     private static final String FILM_NAME = "film_name";
